@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Slowth — Support</title>
+<meta name="description" content="Slowth support: how to enable the Safari extension, what each setting does, how to contact us." />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="shell">
+  <header class="hero">
+    <div class="hero-icon">🦥</div>
+    <div>
+      <h1>Slowth</h1>
+      <div class="tag">Support</div>
+    </div>
+  </header>
+
+  <nav class="nav">
+    <a href="index.html">Home</a>
+    <a href="support.html">Support</a>
+    <a href="privacy.html">Privacy</a>
+  </nav>
+
+  <p class="eyebrow">Need a hand?</p>
+  <h1>Support</h1>
+  <p class="lede">
+    Most questions are answered below. If you&rsquo;re still stuck, email
+    <a href="mailto:denis@malina.page?subject=Slowth%20support">denis@malina.page</a> —
+    a real person reads every message.
+  </p>
+
+  <h2>Getting started</h2>
+
+  <h3>Enable Slowth in Safari (iOS)</h3>
+  <ol>
+    <li>Open <b>Settings → Apps → Safari → Extensions</b>.</li>
+    <li>Tap <b>Slowth</b> and turn it on.</li>
+    <li>Tap <b>All Websites</b> → <b>Allow</b>.</li>
+    <li>Open YouTube/Instagram/etc. — Shorts and Reels are gone.</li>
+  </ol>
+
+  <h3>Enable Slowth in Safari (macOS)</h3>
+  <ol>
+    <li>Open Safari → <b>Settings → Extensions</b>.</li>
+    <li>Check the box next to <b>Slowth</b>.</li>
+    <li>If prompted, click <b>Always Allow on Every Website</b>.</li>
+  </ol>
+
+  <h2>FAQ</h2>
+  <dl class="faq">
+    <dt>What does each per-site mode do?</dt>
+    <dd>
+      <b>Off</b> — Slowth does nothing for that site.
+      <b>Block shorts</b> — hides the Shorts/Reels feed and removes the tab from navigation.
+      <b>Block site</b> — redirects the whole domain to a blocked page.
+      TikTok only has Off / Block site (everything on TikTok is short video).
+    </dd>
+
+    <dt>What is Strict Mode?</dt>
+    <dd>
+      A 24-hour lock. While Strict Mode is on you can&rsquo;t change any toggle, disable Strict Mode early,
+      or refresh the rule list. It survives app restart and reboot. The only way out is to wait — or uninstall.
+      Use it when you know future-you will try to negotiate.
+    </dd>
+
+    <dt>Does Slowth see my browsing?</dt>
+    <dd>
+      No. Filtering runs entirely in your browser. Slowth never sends URLs, page content, or any other
+      activity off your device. See the <a href="privacy.html">privacy policy</a>.
+    </dd>
+
+    <dt>What are these &ldquo;rules&rdquo; that update every 6 hours?</dt>
+    <dd>
+      A list of CSS selectors and URL patterns saying &ldquo;this element on YouTube is the Shorts shelf.&rdquo;
+      Sites change their HTML constantly, so the list is hosted on a public GitHub Gist and Slowth pulls
+      the latest version every 6 hours. The list contains no personal data. You can inspect it on GitHub.
+    </dd>
+
+    <dt>App blocking on iOS — what is that?</dt>
+    <dd>
+      On iOS, Slowth uses Apple&rsquo;s <b>Family Controls</b> framework to block native apps you pick
+      (TikTok, Instagram, etc). Selection happens through Apple&rsquo;s system picker. Your selection
+      stays on-device. Slowth never sees which apps you chose.
+    </dd>
+
+    <dt>Why doesn&rsquo;t YouTube look right after I install Slowth?</dt>
+    <dd>
+      Refresh the page. Safari may have cached the pre-extension version.
+      If a new layout slips through, tap <b>Update rules now</b> in the app, then refresh.
+    </dd>
+
+    <dt>I disabled Strict Mode but settings are still locked.</dt>
+    <dd>
+      Strict Mode runs to a date stored in shared storage. Even closing/reopening the app
+      doesn&rsquo;t end it early — that&rsquo;s the point. It will release automatically when the timer hits 0.
+    </dd>
+
+    <dt>I want a feature / found a bug.</dt>
+    <dd>
+      Email <a href="mailto:denis@malina.page?subject=Slowth%20feedback">denis@malina.page</a>.
+      Include your iOS/macOS version and what you expected vs. what happened.
+    </dd>
+  </dl>
+
+  <h2>Contact</h2>
+  <div class="card">
+    <p><b>Email:</b> <a href="mailto:denis@malina.page">denis@malina.page</a></p>
+    <p style="margin: 0;">Response within 2&ndash;3 business days. (Slowly.)</p>
+  </div>
+
+  <footer>
+    <div>© 2026 Slowth.</div>
+    <div>
+      <a href="index.html">Home</a> ·
+      <a href="privacy.html">Privacy</a>
+    </div>
+  </footer>
+</div>
+</body>
+</html>

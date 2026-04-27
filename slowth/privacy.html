@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Slowth — Privacy Policy</title>
+<meta name="description" content="Slowth doesn't collect, store, or transmit personal data. Filtering runs locally in your browser." />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="shell">
+  <header class="hero">
+    <div class="hero-icon">🦥</div>
+    <div>
+      <h1>Slowth</h1>
+      <div class="tag">Privacy Policy</div>
+    </div>
+  </header>
+
+  <nav class="nav">
+    <a href="index.html">Home</a>
+    <a href="support.html">Support</a>
+    <a href="privacy.html">Privacy</a>
+  </nav>
+
+  <p class="eyebrow">Plain English</p>
+  <h1>Privacy Policy</h1>
+  <p class="meta">Last updated: 28 April 2026</p>
+
+  <p class="lede">
+    Slowth doesn&rsquo;t collect, store, or transmit any personal data. There is no account,
+    no analytics, no tracking, no advertising SDK, and no server that knows you exist.
+    This page is the long version of that.
+  </p>
+
+  <h2>What Slowth does on your device</h2>
+  <p>
+    Slowth is a Safari Web Extension and a small host app. It hides Shorts/Reels feeds and can
+    redirect short-video sites. All of that filtering runs locally in Safari. URLs, page content,
+    and your activity never leave your device.
+  </p>
+
+  <h2>What we store, and where</h2>
+  <ul>
+    <li>
+      <b>Your settings</b> (per-site mode, Strict Mode timer, app-blocking selection) are saved in
+      a shared App Group container on your device. They never sync to us.
+    </li>
+    <li>
+      <b>The blocking rule list</b> (CSS selectors and URL patterns) is cached on your device after
+      it&rsquo;s downloaded. The list contains no personal data — it&rsquo;s the same list everyone gets.
+    </li>
+  </ul>
+
+  <h2>What leaves your device</h2>
+  <p>
+    Exactly one network request: every six hours, the app fetches the latest blocking-rule list
+    from a public GitHub Gist over HTTPS. The request includes only what any normal HTTPS fetch
+    includes (your IP address, which GitHub sees the same way it would for any visitor).
+    No identifiers, no telemetry payload, no analytics ping.
+  </p>
+  <p>
+    GitHub&rsquo;s own privacy policy applies to that fetch:
+    <a href="https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener">github.com/privacy</a>.
+  </p>
+
+  <h2>Family Controls (iOS only)</h2>
+  <p>
+    On iOS, Slowth uses Apple&rsquo;s <b>Family Controls</b> framework to optionally block native apps
+    you choose. The list of apps you select is stored by iOS in a privacy-protected token; the OS
+    will not reveal which apps you picked, even to Slowth. Slowth only stores the opaque token
+    locally and asks iOS to enforce the shield.
+  </p>
+
+  <h2>Third-party services</h2>
+  <ul>
+    <li>
+      <b>GitHub</b> — hosts the public blocking-rule list. Slowth fetches the file; nothing else.
+    </li>
+    <li>That&rsquo;s the entire list.</li>
+  </ul>
+
+  <h2>Children</h2>
+  <p>
+    Slowth doesn&rsquo;t collect data from anyone, including children. The app is safe for users
+    of any age.
+  </p>
+
+  <h2>Changes</h2>
+  <p>
+    If this policy changes, the &ldquo;Last updated&rdquo; date at the top will change.
+    Material changes will also be noted in app release notes.
+  </p>
+
+  <h2>Contact</h2>
+  <div class="card">
+    <p><b>Email:</b> <a href="mailto:denis@malina.page?subject=Slowth%20privacy">denis@malina.page</a></p>
+    <p style="margin: 0;">Questions, requests, or just to say hi.</p>
+  </div>
+
+  <footer>
+    <div>© 2026 Slowth.</div>
+    <div>
+      <a href="index.html">Home</a> ·
+      <a href="support.html">Support</a>
+    </div>
+  </footer>
+</div>
+</body>
+</html>
