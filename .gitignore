@@ -1,0 +1,5 @@
+.DS_Store
+.playwright-mcp/
+/slowth-*.png
+/support-*.png
+/privacy-*.png

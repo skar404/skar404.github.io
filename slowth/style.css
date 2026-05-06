@@ -103,20 +103,19 @@ header.hero {
 .hero-icon {
   width: 84px; height: 84px;
   border-radius: 20px;
-  background: linear-gradient(160deg, var(--bg-light), var(--bg-mid));
   border: 1px solid var(--rule);
-  display: grid; place-items: center;
-  font-size: 44px;
   flex-shrink: 0;
+  object-fit: cover;
+  display: block;
 }
 .hero h1 { margin: 0; }
-.hero .tag { font-size: 14px; color: var(--muted); }
+.hero .tag { font-size: 17px; color: var(--cream); font-weight: 500; max-width: 28ch; line-height: 1.25; }
 
 .nav {
   display: flex;
   gap: 24px;
   font-size: 14px;
-  margin-bottom: 48px;
+  margin-bottom: 20px;
   flex-wrap: wrap;
 }
 .nav a { color: var(--cream); opacity: 0.7; }
@@ -140,3 +139,60 @@ footer a:hover { color: var(--pink); }
 
 .faq dt { font-weight: 700; color: var(--cream); margin-top: 20px; }
 .faq dd { margin: 6px 0 0; color: var(--muted); }
+
+.app-store-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin: 12px 0 8px;
+}
+.app-store-badges a {
+  display: inline-flex;
+  transition: opacity 0.15s;
+}
+.app-store-badges a:hover { opacity: 0.85; }
+.app-store-badges svg,
+.app-store-badges img { height: 52px; width: auto; display: block; }
+
+.screenshots-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  overflow-x: auto;
+  padding: 8px 24px 20px;
+  margin: 0 -24px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+.screenshots-row figure {
+  margin: 0;
+  flex-shrink: 0;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.screenshots-row figure img {
+  height: 440px;
+  width: auto;
+  border: 1px solid var(--rule);
+  background: rgba(0, 0, 0, 0.2);
+  display: block;
+}
+.screenshots-row figure.ios img {
+  border-radius: 22px;
+}
+.screenshots-row figure.mac img {
+  border-radius: 12px;
+}
+.screenshots-row figcaption {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding-left: 4px;
+}
+@media (max-width: 600px) {
+  .screenshots-row figure img { height: 360px; }
+}
