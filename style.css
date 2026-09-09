@@ -113,6 +113,66 @@ p { margin: 0 0 16px; }
 .card-links a { color: var(--accent); }
 .card-links a:hover { color: var(--accent-hover); }
 
+.card-status {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  padding: 4px 10px;
+}
+
+.card.spoiler {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+.card-summary {
+  display: block;
+  list-style: none;
+}
+.card-summary::-webkit-details-marker { display: none; }
+.card.spoiler .card-body {
+  filter: blur(7px);
+  user-select: none;
+  transition: filter 0.25s;
+}
+.card.spoiler[open] .card-body {
+  filter: blur(0);
+  user-select: auto;
+}
+.card.under-construction .card-body { padding-left: 34px; }
+
+.tape {
+  position: absolute;
+  width: 140px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    repeating-linear-gradient(45deg, #1a1408 0 4px, transparent 4px 10px) top / 100% 4px no-repeat,
+    repeating-linear-gradient(45deg, #1a1408 0 4px, transparent 4px 10px) bottom / 100% 4px no-repeat,
+    #f4c018;
+  color: #1a1408;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+}
+.tape.corner-tl { top: 16px; left: -34px; transform: rotate(calc(-45deg + var(--jitter, 0deg))); }
+.tape.corner-tr { top: 16px; right: -34px; transform: rotate(calc(45deg + var(--jitter, 0deg))); }
+.tape.corner-bl { bottom: 16px; left: -34px; transform: rotate(calc(45deg + var(--jitter, 0deg))); }
+.tape.corner-br { bottom: 16px; right: -34px; transform: rotate(calc(-45deg + var(--jitter, 0deg))); }
+
 .connect {
   list-style: none;
   padding: 0;
@@ -146,4 +206,10 @@ footer {
   .shell { padding: 48px 20px 72px; }
   .card { padding: 18px; gap: 14px; }
   .card-icon { width: 44px; height: 44px; border-radius: 11px; }
+  .tape { width: 110px; height: 16px; font-size: 7px; }
+  .tape.corner-tl, .tape.corner-tr { top: 10px; }
+  .tape.corner-bl, .tape.corner-br { bottom: 10px; }
+  .tape.corner-tl, .tape.corner-bl { left: -32px; }
+  .tape.corner-tr, .tape.corner-br { right: -32px; }
+  .card.under-construction .card-body { padding-left: 26px; }
 }
