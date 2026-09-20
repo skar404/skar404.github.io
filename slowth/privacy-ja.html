@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ja" dir="ltr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Slowth — プライバシーポリシー</title>
+<meta name="description" content="Slowthの設定、Safariでのブロック、端末内での画面解析におけるデータの取り扱いについて。" />
+<link rel="canonical" href="https://malina.page/slowth/privacy-ja.html" />
+<link rel="alternate" hreflang="en" href="https://malina.page/slowth/privacy.html" />
+<link rel="alternate" hreflang="es-MX" href="https://malina.page/slowth/privacy-es-MX.html" />
+<link rel="alternate" hreflang="hi" href="https://malina.page/slowth/privacy-hi.html" />
+<link rel="alternate" hreflang="fr-FR" href="https://malina.page/slowth/privacy-fr-FR.html" />
+<link rel="alternate" hreflang="ar-SA" href="https://malina.page/slowth/privacy-ar-SA.html" />
+<link rel="alternate" hreflang="ja" href="https://malina.page/slowth/privacy-ja.html" />
+<link rel="alternate" hreflang="de-DE" href="https://malina.page/slowth/privacy-de-DE.html" />
+<link rel="alternate" hreflang="x-default" href="https://malina.page/slowth/privacy.html" />
+<link rel="icon" type="image/png" href="img/logo/logo.png" />
+<link rel="apple-touch-icon" href="img/logo/logo.png" />
+<link rel="stylesheet" href="style.css" />
+<link rel="stylesheet" href="privacy.css" />
+</head>
+<body>
+<div class="shell">
+  <header class="hero">
+    <img class="hero-icon" src="img/logo/logo.png" alt="Slowthアプリのロゴ" width="84" height="84" />
+    <div>
+      <div class="brand" dir="ltr">Slowth</div>
+      <div class="tag">プライバシーポリシー</div>
+    </div>
+  </header>
+  <nav class="nav">
+    <a href="index.html">ホーム</a>
+    <a href="support.html">サポート</a>
+    <a href="privacy-ja.html" aria-current="page">プライバシー</a>
+  </nav>
+  <nav class="language-picker" aria-label="ポリシーの言語">
+    <span class="language-label">ポリシーの言語</span>
+    <a href="privacy.html" lang="en" hreflang="en"><bdi>English</bdi></a>
+    <a href="privacy-es-MX.html" lang="es-MX" hreflang="es-MX"><bdi>Español (México)</bdi></a>
+    <a href="privacy-hi.html" lang="hi" hreflang="hi"><bdi>हिन्दी</bdi></a>
+    <a href="privacy-fr-FR.html" lang="fr-FR" hreflang="fr-FR"><bdi>Français</bdi></a>
+    <a href="privacy-ar-SA.html" lang="ar-SA" hreflang="ar-SA"><bdi>العربية</bdi></a>
+    <a href="privacy-ja.html" lang="ja" hreflang="ja" aria-current="page"><bdi>日本語</bdi></a>
+    <a href="privacy-de-DE.html" lang="de-DE" hreflang="de-DE"><bdi>Deutsch</bdi></a>
+  </nav>
+  <main>
+    <h1>プライバシーポリシー</h1>
+    <p class="meta">最終更新日：2026年9月20日</p>
+    <p class="lede">Slowthは閲覧履歴や画面の内容を収集しません。App Storeで配信するアプリには、アカウント、利用状況の解析、トラッキング、広告SDK、開発者が運営するバックエンドはありません。ブロック処理と画面解析は端末内で行われます。</p>
+  <section>
+    <h2>Safariでのブロック</h2>
+    <p>Slowthは、iPhone、iPad、Mac向けのアプリを備えたSafari機能拡張です。対応するページを端末内で読み取り、選択したコンテンツを非表示にするか、別のページにリダイレクトします。閲覧履歴、ページの内容、ブロックの設定が開発者に送信されることはありません。</p>
+  </section>
+  <section>
+    <h2>リアルタイムブロック（ベータ）— iPhoneとiPad</h2>
+    <p>この任意の機能を有効にすると、ブロードキャストの実行中にAppleのReplayKitが画面画像を提供します。Slowthは端末内のCore MLで選択したショート、リール、ストーリーズを検出し、スクリーンタイムのブロック画面を表示するようiOSに要求します。監視中はシステムの録画インジケータが表示されます。</p>
+    <p>App Store版アプリの通常の利用では、画面画像は保存もアップロードもされません。音声サンプルは処理しません。録画コントロールから監視を停止できます。開発者向けのキャプチャおよびアップロード機能はデバッグビルドに限定され、App Store版アプリでは利用できません。</p>
+    <p>MacではSafari内のコンテンツのみをブロックします。画面の監視や、他のアプリ内のコンテンツのブロックは行いません。</p>
+  </section>
+  <section>
+    <h2>端末内に保存するもの</h2>
+    <p>設定、サイトごとのモード、厳格モードのタイマー、アプリ選択のトークン、動作状況は端末内に保存されます。ダウンロードしたブロックルールも端末内にキャッシュされます。これらの設定やルールが開発者に送信されることはありません。</p>
+  </section>
+  <section>
+    <h2>ルールの更新とネットワーク通信</h2>
+    <p>Safari機能拡張は、GitHub Gistの公開ブロックルールファイルをHTTPS経由で定期的にダウンロードします。同じルールがすべての利用者に公開されています。このリクエストには、閲覧履歴、ページの内容、画面画像、選択したアプリの情報は含まれません。</p>
+    <p>ファイルを配信する際、GitHubはIPアドレスなどの通常の接続情報を受け取ります。この通信にはGitHubのプライバシーポリシーが適用されます。</p>
+  </section>
+  <section>
+    <h2>スクリーンタイムとFamily Controls — iOSのみ</h2>
+    <p>利用者の許可を得て、SlowthはAppleのFamily ControlsおよびManaged Settingsフレームワークを使用し、選択されたアプリにブロック画面を表示します。アプリの選択は、プライバシーを保護するトークンで表されます。トークンは端末内に保存され、iOSにブロックの適用を要求するために使われます。</p>
+  </section>
+  <section>
+    <h2>ウェブサイトと外部サービス</h2>
+    <p>SlowthのウェブサイトはGitHub PagesとCloudflareを通じて配信されます。サイトにアクセスすると通常のウェブリクエストが発生するため、これらの事業者はIPアドレスなどの接続情報を受け取ります。他の外部リンクを開く場合は、リンク先のプライバシーポリシーが適用されます。このページの言語リンクは、CookieやJavaScriptを使わずに動作します。</p>
+  </section>
+  <section>
+    <h2>お子様の利用</h2>
+    <p>Slowthは、お子様を含む利用者の閲覧履歴や画面の内容を収集しません。</p>
+  </section>
+  <section>
+    <h2>ポリシーの変更</h2>
+    <p>このポリシーを変更した場合は、ページ上部の日付を更新します。重要な変更は、アプリのリリースノートでもお知らせします。</p>
+  </section>
+    <ul class="privacy-links">
+      <li><a href="https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement">GitHubのプライバシーステートメント</a></li>
+      <li><a href="https://www.cloudflare.com/privacypolicy/">Cloudflareのプライバシーポリシー</a></li>
+    </ul>
+    <section>
+      <h2>お問い合わせ</h2>
+      <div class="card">
+        <p>プライバシーに関するご質問やご要望は、メールでお寄せください。お問い合わせの際には、返信するためにメールアドレスと送信された情報を受け取ります。</p>
+        <p class="contact-email">メール: <a href="mailto:denis@malina.page?subject=Slowth%20privacy"><bdi dir="ltr">denis@malina.page</bdi></a></p>
+      </div>
+    </section>
+  </main>
+  <footer>
+    <div><bdi dir="ltr">© 2026 Slowth.</bdi></div>
+    <div><a href="index.html">ホーム</a> · <a href="support.html">サポート</a></div>
+  </footer>
+</div>
+</body>
+</html>
