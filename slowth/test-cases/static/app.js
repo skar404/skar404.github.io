@@ -17,15 +17,106 @@ const identity = (item) => item.record?.id || item.body.request_id;
 const info = (item) => item.record || item.body;
 const finalizing = (item) => ["completing", "finalizing", "complete"].includes(item.record?.status);
 
+// A persisted incident stays paused until this tab explicitly recovers it.
+const pauseKey = `slowth-service-pause:${apiOrigin}`;
+let servicePause = null, acceptedIncident = null, recovering = false, recoverySerial = false;
+function readPause() {
+  try { return JSON.parse(localStorage.getItem(pauseKey) || "null"); } catch { return servicePause; }
+}
+function servicePaused() {
+  const shared = readPause();
+  if (shared && (!servicePause || shared.until >= servicePause.until)) servicePause = shared;
+  return Boolean(servicePause && servicePause.id !== acceptedIncident);
+}
+function pauseError() { return new LocalizedError(m("pause_server", {seconds: waitSeconds()})); }
+function waitSeconds() { return Math.max(0, Math.ceil(((servicePause?.until || 0) - Date.now()) / 1000)); }
+function checkPause() { if (servicePaused()) throw pauseError(); }
+function pauseService(seconds = 30, reason) {
+  const previous = readPause();
+  servicePause = { id: crypto.randomUUID(), until: Math.max(Date.now() + seconds * 1000, previous?.until || 0),
+    reason: reason === "start_budget" ? "limit" : "server" };
+  acceptedIncident = null;
+  try { localStorage.setItem(pauseKey, JSON.stringify(servicePause)); } catch { /* Keep the in-tab pause. */ }
+  renderPause();
+}
+const pauseBanner = document.createElement("aside");
+pauseBanner.id = "service-pause"; pauseBanner.className = "service-pause"; pauseBanner.hidden = true;
+const pauseMessage = document.createElement("p"); pauseMessage.setAttribute("role", "status");
+const retryButton = document.createElement("button"); retryButton.id = "service-retry"; retryButton.type = "button"; retryButton.className = "text-button";
+pauseBanner.append(pauseMessage, retryButton); form.parentElement.before(pauseBanner);
+function renderPause() {
+  pauseBanner.hidden = !servicePaused();
+  if (pauseBanner.hidden) return;
+  I18n.bind(pauseMessage, m(servicePause.reason === "limit" ? "pause_limit" : "pause_server", {seconds: waitSeconds()}));
+  I18n.bind(retryButton, m("pause_retry"));
+  retryButton.disabled = recovering || waitSeconds() > 0;
+}
+window.addEventListener("storage", (event) => {
+  if (event.key !== pauseKey) return;
+  // Concurrent failures must never shorten the longer waiting period.
+  try {
+    const incoming = JSON.parse(event.newValue || "null"), shared = readPause();
+    if (incoming && (!shared || incoming.until > shared.until)) {
+      localStorage.setItem(pauseKey, JSON.stringify(incoming));
+    }
+  } catch { /* Keep the local incident if storage is unavailable. */ }
+  renderPause();
+});
+setInterval(renderPause, 250);
+async function recoverService() {
+  if (recovering || !servicePaused() || waitSeconds() > 0) return;
+  const incident = servicePause.id;
+  recovering = true; renderPause();
+  const recover = async () => {
+    if (!servicePaused() || servicePause.id !== incident || waitSeconds() > 0) return;
+    try {
+      await Promise.all(apiSlots);
+      while (running) await new Promise(resolve => setTimeout(resolve, 50));
+      if (!servicePaused() || servicePause.id !== incident || waitSeconds() > 0) return;
+      const session = await fetchApi("/session", { probe: true });
+      // An in-flight request in another tab may have reported a newer incident.
+      servicePaused();
+      if (servicePause.id !== incident) return;
+      acceptedIncident = incident; recoverySerial = true;
+      renderPause();
+      if (!config) await boot(session);
+      else await refreshHistory();
+      if (!servicePaused()) await upload();
+      for (const [id, state] of annotationStates) {
+        if (servicePaused()) break;
+        if (dirty(state)) await saveAnnotations([id]);
+      }
+    } catch { /* fetchApi records the next manual waiting period. */ }
+    finally {
+      recoverySerial = false;
+      for (const [id, state] of annotationStates) {
+        if (dirty(state) && !state.error) scheduleAnnotation(id);
+      }
+    }
+  };
+  try {
+    if (navigator.locks) await navigator.locks.request(`slowth-recovery:${apiOrigin}`, { ifAvailable: true }, async (lock) => {
+      if (lock) await recover();
+    });
+    else await recover();
+  } finally { recovering = false; renderPause(); }
+}
+retryButton.onclick = recoverService;
+
 // Five API requests per browser identity across same-origin tabs. Distinct cases
 // can save concurrently; a case lock serializes writes/repair for the same case.
 const apiSlots = Array.from({ length: 5 }, () => Promise.resolve());
 const apiDepth = Array(5).fill(0);
 function api(path, options = {}) {
-  const slot = apiDepth.indexOf(Math.min(...apiDepth));
+  const incident = readPause()?.id;
+  const slot = recoverySerial ? 0 : apiDepth.indexOf(Math.min(...apiDepth));
   apiDepth[slot]++;
   const run = async () => {
-    const request = () => requestApi(path, options);
+    const request = () => {
+      checkPause();
+      if (incident !== readPause()?.id) throw pauseError();
+      return requestApi(path, options);
+    };
     if (!navigator.locks || !config?.user_id) return request();
     const owner = `slowth-api:${config.user_id}`;
     const caseId = path === "/uploads/annotations" ? null : path.match(/^\/uploads\/([^/]+)/)?.[1]
@@ -45,22 +136,14 @@ function api(path, options = {}) {
 }
 
 async function requestApi(path, { method = "GET", body, skip } = {}) {
-  for (let attempt = 0; ; attempt++) {
-    try {
-      const unchanged = skip?.();
-      if (unchanged) return unchanged;
-      return await fetchApi(path, { method, body });
-    }
-    catch (error) {
-      // A competing tab/client or annotation repair can briefly own the server lock.
-      // Hourly and per-minute budgets are not lock contention and are not retried here.
-      if (error.reason !== "user_busy" || attempt >= 4) throw error;
-      await new Promise((resolve) => setTimeout(resolve, error.retryAfter * 1000));
-    }
-  }
+  checkPause();
+  const unchanged = skip?.();
+  if (unchanged) return unchanged;
+  return fetchApi(path, { method, body });
 }
 
-async function fetchApi(path, { method = "GET", body } = {}) {
+async function fetchApi(path, { method = "GET", body, probe = false } = {}) {
+  if (!probe) checkPause();
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 180000);
   try {
@@ -74,12 +157,16 @@ async function fetchApi(path, { method = "GET", body } = {}) {
       const error = new LocalizedError(I18n.apiError(data.code));
       error.status = response.status;
       error.reason = data.reason;
-      error.retryAfter = Math.min(10, Math.max(1, Number(response.headers.get("Retry-After")) || 2));
+      const header = response.headers.get("Retry-After");
+      const wait = Number(header) || Math.ceil((Date.parse(header) - Date.now()) / 1000);
+      error.retryAfter = Math.max(1, Number(data.retry_after_seconds) || wait || 30);
+      if (response.status === 429 || response.status >= 500 || probe) pauseService(error.retryAfter, data.reason);
       throw error;
     }
     if (data.server_time) serverOffset = data.server_time - Date.now() / 1000;
     return data;
   } catch (error) {
+    if (error.name === "AbortError" || error instanceof TypeError) pauseService(30);
     if (error.name === "AbortError") throw new LocalizedError(m("text_001"));
     if (error instanceof TypeError) throw new LocalizedError(m("text_002"));
     throw error;
@@ -176,6 +263,7 @@ async function selectFiles(files) {
 }
 
 function putPart(url, blob, number) {
+  checkPause();
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     requests.add(xhr);
@@ -189,10 +277,13 @@ function putPart(url, blob, number) {
     xhr.onload = () => {
       if (xhr.status >= 200 && xhr.status < 300) {
         completed.set(number, blob.size); finish(); progress();
-      } else finish(new LocalizedError(m("text_014", {p0: xhr.status})));
+      } else {
+        if (xhr.status === 429 || xhr.status >= 500) pauseService(30);
+        const error = new LocalizedError(m("text_014", {p0: xhr.status})); error.status = xhr.status; finish(error);
+      }
     };
-    xhr.onerror = () => finish(new LocalizedError(m("text_015")));
-    xhr.ontimeout = () => finish(new LocalizedError(m("text_016")));
+    xhr.onerror = () => { pauseService(30); finish(new LocalizedError(m("text_015"))); };
+    xhr.ontimeout = () => { pauseService(30); finish(new LocalizedError(m("text_016"))); };
     xhr.onabort = () => finish(new LocalizedError(m("text_017")));
     xhr.send(blob);
   });
@@ -201,18 +292,12 @@ function putPart(url, blob, number) {
 async function sendPart(number, row) {
   const start = (number - 1) * row.part_size;
   const blob = file.slice(start, Math.min(start + row.part_size, file.size));
-  for (let attempt = 0; attempt < 3; attempt++) {
-    if (stopped) throw new LocalizedError(m("text_017"));
-    try {
-      const signed = await api(`/uploads/${row.id}/parts`, { method: "POST", body: { numbers: [number] } });
-      if (stopped) throw new LocalizedError(m("text_017"));
-      await putPart(signed.parts[0].url, blob, number);
-      return;
-    } catch (error) {
-      if (stopped || attempt === 2 || (error.status && error.status < 500 && error.status !== 429)) throw error;
-      await new Promise((resolve) => setTimeout(resolve, 1000 * 2 ** attempt));
-    }
-  }
+  checkPause();
+  if (stopped) throw new LocalizedError(m("text_017"));
+  const signed = await api(`/uploads/${row.id}/parts`, { method: "POST", body: { numbers: [number] } });
+  checkPause();
+  if (stopped) throw new LocalizedError(m("text_017"));
+  await putPart(signed.parts[0].url, blob, number);
 }
 
 async function uploadOne(item) {
@@ -221,7 +306,16 @@ async function uploadOne(item) {
   completed.clear(); inFlight.clear(); progress();
   state(m("text_018", {p0: info(item).filename}), m("text_019"));
   if (!item.record) {
-    item.record = await api("/uploads", { method: "POST", body: item.body }); saveQueue();
+    // Reconcile a lost Create response with its stable request ID before another POST.
+    if (item.uncertainStart) {
+      try { item.record = await api(`/uploads/${item.body.request_id}`); }
+      catch (error) { if (error.status !== 404) throw error; }
+    }
+    if (!item.record) {
+      item.uncertainStart = true; saveQueue();
+      item.record = await api("/uploads", { method: "POST", body: item.body });
+    }
+    item.uncertainStart = false; saveQueue();
   }
   let row = await api(`/uploads/${item.record.id}`);
   if (row.status === "creating") {
@@ -244,15 +338,15 @@ async function uploadOne(item) {
     const parts = Array.from({ length: count }, (_, i) => i + 1).filter((n) => !completed.has(n));
     progress();
     const worker = async () => {
-      while (parts.length && !stopped) {
+      while (parts.length && !stopped && !servicePaused()) {
         try { await sendPart(parts.shift(), row); }
-        catch (error) { stopped = true; requests.forEach((xhr) => xhr.abort()); throw error; }
+        catch (error) { stopped = true; throw error; }
       }
     };
-    const results = await Promise.allSettled(Array.from({ length: Math.min(3, parts.length) }, worker));
+    const results = await Promise.allSettled(Array.from({ length: Math.min(recoverySerial ? 1 : 3, parts.length) }, worker));
     const failure = results.find((result) => result.status === "rejected");
     if (failure) throw failure.reason;
-    if (stopped || paused) throw new LocalizedError(m("text_017"));
+    if (stopped || paused || servicePaused()) throw new LocalizedError(m("text_017"));
   }
   state(m("text_023", {p0: row.filename}), m("text_024"));
   item.record.status = "completing"; saveQueue();
@@ -260,13 +354,13 @@ async function uploadOne(item) {
 }
 
 async function upload() {
-  if (running || selecting || !config?.storage_ready || !form.reportValidity()) return;
+  if (servicePaused() || running || selecting || !config?.storage_ready || !form.reportValidity()) return;
   if (!queue.some((item) => item.state !== "done")) return;
   saveQueue();
   running = true; paused = false; errorMessage(""); $("success").hidden = true; renderQueue();
   try {
     for (const item of queue) {
-      if (paused) break;
+      if (paused || servicePaused()) break;
       if (item.state === "done") continue;
       if (!item.file && !finalizing(item)) { item.error = m("text_022"); continue; }
       try {
@@ -406,6 +500,7 @@ function tagGroup(name, title, options, onChange) {
 const pendingAnnotations = new Set();
 let annotationFlush;
 function enqueueAnnotation(id) {
+  if (servicePaused() || recoverySerial) return;
   pendingAnnotations.add(id);
   clearTimeout(annotationFlush);
   annotationFlush = setTimeout(() => {
@@ -417,7 +512,7 @@ function enqueueAnnotation(id) {
 function scheduleAnnotation(id) {
   const state = annotationStates.get(id);
   clearTimeout(state.timer);
-  if (dirty(state) && !state.saving && !state.deleting) {
+  if (!servicePaused() && !recoverySerial && dirty(state) && !state.saving && !state.deleting) {
     state.timer = setTimeout(() => enqueueAnnotation(id), Math.max(0, state.lastChange + 5000 - Date.now()));
   }
 }
@@ -456,17 +551,20 @@ function updateAnnotationUI(id) {
 
 function saveAnnotation(id) { return saveAnnotations([id]); }
 
-async function saveAnnotations(ids, attempt = 0) {
+async function saveAnnotations(ids) {
+  if (servicePaused()) return;
   const entries = [...new Set(ids)].map((id) => ({ id, state: annotationStates.get(id) }))
     .filter(({ state }) => state && !state.deleting && !state.saving && dirty(state));
   const groups = [];
   for (let i = 0; i < entries.length; i += 5) groups.push(entries.slice(i, i + 5));
-  await Promise.all(groups.map((group) => saveAnnotationGroup(group, attempt)));
+  for (const group of groups) {
+    if (servicePaused()) break;
+    await saveAnnotationGroup(group);
+  }
 }
 
-async function saveAnnotationGroup(entries, attempt) {
+async function saveAnnotationGroup(entries) {
   const single = entries.length === 1;
-  const retry = [];
   for (const { id, state } of entries) {
     clearTimeout(state.timer); pendingAnnotations.delete(id);
     state.saving = true; state.error = ""; updateAnnotationUI(id);
@@ -499,7 +597,9 @@ async function saveAnnotationGroup(entries, attempt) {
       const { state, revision } = entry;
       if (result.error) {
         state.error = I18n.apiError(result.error.code);
-        if (result.error.reason === "user_busy" && attempt < 4) retry.push(entry.id);
+        if (result.error.retry_after_seconds || ["rate_limited", "storage_unavailable"].includes(result.error.code)) {
+          pauseService(result.error.retry_after_seconds || 30, result.error.reason);
+        }
         continue;
       }
       const saved = result.upload;
@@ -517,10 +617,6 @@ async function saveAnnotationGroup(entries, attempt) {
       if (dirty(state) && !state.error && !state.deleting) scheduleAnnotation(id);
     }
     persistAnnotations(); updateHistoryControls(); updateBulk();
-  }
-  if (retry.length) {
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    await saveAnnotations(retry, attempt + 1);
   }
 }
 
@@ -657,7 +753,7 @@ function renderHistory() {
 }
 
 async function refreshHistory() {
-  if (!config?.storage_ready || historyBusy || running) return;
+  if (servicePaused() || !config?.storage_ready || historyBusy || running) return;
   historyBusy = true; $("history-error").hidden = true;
   try {
     historyRows = (await api("/uploads")).uploads;
@@ -670,9 +766,9 @@ async function refreshHistory() {
   finally { historyBusy = false; }
 }
 
-async function boot() {
+async function boot(session) {
   try {
-    config = await api("/session"); I18n.bind($("visitor-id"), config.user_id);
+    config = session || await api("/session"); I18n.bind($("visitor-id"), config.user_id);
     I18n.bind($("deletion-visitor-id"), config.user_id);
     I18n.bind($("deletion-email"), () => "mailto:denis@malina.page?subject=" + encodeURIComponent(I18n.render(m("mail_subject"))) + "&body=" + encodeURIComponent(I18n.render(m("mail_body", {id: config.user_id}))), "href");
     try { restoredAnnotations = JSON.parse(localStorage.getItem(annotationKey()) || "{}"); } catch { restoredAnnotations = {}; }

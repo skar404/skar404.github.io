@@ -146,5 +146,8 @@
   "text_100": "Nuna ciyarwar post, bayanin martaba, bincike, ko dogon bidiyo. Waɗannan misalan suna taimaka wa Slowth guje wa toshe abun ciki na yau da kullun.",
   "text_114": "Ƙari game da Slowth",
   "api_quota_exceeded": "An kai iyakar lodawa. Tuntuɓi ƙungiyar Slowth.",
-  "mail_subject": "Share fayilolin Slowth dina"
+  "mail_subject": "Share fayilolin Slowth dina",
+  "pause_server": "Sabar ba ta samuwa na ɗan lokaci. Sake gwadawa bayan daƙiƙa {seconds}.",
+  "pause_limit": "An kai iyakar lodawa. Sake gwadawa bayan daƙiƙa {seconds}.",
+  "pause_retry": "Sake gwadawa"
 }

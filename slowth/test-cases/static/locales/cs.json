@@ -146,5 +146,8 @@
   "text_100": "Zobrazit zdroj příspěvků, profil, vyhledávání nebo dlouhé video. Tyto příklady pomáhají Slowth vyhnout se blokování normálního obsahu.",
   "text_114": "Více o Slowth",
   "api_quota_exceeded": "Byl dosažen limit nahrávání. Kontaktujte tým Slowth.",
-  "mail_subject": "Smazat mé soubory Slowth"
+  "mail_subject": "Smazat mé soubory Slowth",
+  "pause_server": "Server je dočasně nedostupný. Zkuste to za {seconds} s.",
+  "pause_limit": "Dosažen limit nahrávání. Zkuste to za {seconds} s.",
+  "pause_retry": "Zkusit znovu"
 }

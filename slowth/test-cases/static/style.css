@@ -294,3 +294,6 @@ fieldset:disabled .chip, fieldset:disabled .drop-zone { cursor: default; }
 }
 
 h1 > span[data-i18n] { color: inherit; }
+
+.service-pause { margin-bottom: 20px; position: sticky; top: 8px; z-index: 10; padding: 16px; border: 1px solid var(--pink); border-radius: 12px; background: var(--bg-deep, #19151f); }
+.service-pause[hidden] { display: none; }

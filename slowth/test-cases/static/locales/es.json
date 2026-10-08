@@ -146,5 +146,8 @@
   "text_100": "Mostrar una publicación, perfil, búsqueda o vídeo largo. Estos ejemplos ayudan a Slowth a evitar bloquear contenido normal.",
   "text_114": "Más sobre Slowth",
   "api_quota_exceeded": "Límite de carga alcanzado. Póngase en contacto con el equipo de Slowth.",
-  "mail_subject": "Eliminar mis archivos Slowth"
+  "mail_subject": "Eliminar mis archivos Slowth",
+  "pause_server": "Servidor temporalmente no disponible. Inténtalo en {seconds} s.",
+  "pause_limit": "Límite de subidas alcanzado. Inténtalo en {seconds} s.",
+  "pause_retry": "Reintentar"
 }

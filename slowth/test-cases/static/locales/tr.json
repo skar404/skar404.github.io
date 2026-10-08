@@ -146,5 +146,8 @@
   "text_100": "Bir gönderi beslemesini, profili, aramayı veya uzun videoyu gösterin. Bu örnekler Slowth'nin normal içeriği engellemekten kaçınmasına yardımcı olur.",
   "text_114": "Slowth hakkında daha fazla bilgi",
   "api_quota_exceeded": "Yükleme sınırına ulaşıldı. Slowth ekibiyle iletişime geçin.",
-  "mail_subject": "Slowth dosyalarımı sil"
+  "mail_subject": "Slowth dosyalarımı sil",
+  "pause_server": "Sunucu geçici olarak kullanılamıyor. {seconds} sn sonra tekrar deneyin.",
+  "pause_limit": "Yükleme sınırına ulaşıldı. {seconds} sn sonra tekrar deneyin.",
+  "pause_retry": "Tekrar dene"
 }

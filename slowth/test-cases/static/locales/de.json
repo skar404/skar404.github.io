@@ -146,5 +146,8 @@
   "text_100": "Zeigen Sie einen Beitrags-Feed, ein Profil, eine Suche oder ein langes Video an. Diese Beispiele helfen Slowth, das Blockieren normaler Inhalte zu vermeiden.",
   "text_114": "Mehr über Slowth",
   "api_quota_exceeded": "Upload-Limit erreicht. Kontaktieren Sie das Slowth-Team.",
-  "mail_subject": "Meine Slowth-Dateien löschen"
+  "mail_subject": "Meine Slowth-Dateien löschen",
+  "pause_server": "Server vorübergehend nicht verfügbar. In {seconds} s erneut versuchen.",
+  "pause_limit": "Upload-Limit erreicht. In {seconds} s erneut versuchen.",
+  "pause_retry": "Erneut versuchen"
 }

@@ -146,5 +146,8 @@
   "text_100": "Hiển thị nguồn cấp dữ liệu bài đăng, hồ sơ, tìm kiếm hoặc video dài. Những ví dụ này giúp Slowth tránh chặn nội dung thông thường.",
   "text_114": "Tìm hiểu thêm về Slowth",
   "api_quota_exceeded": "Đã đạt đến giới hạn tải lên. Hãy liên hệ với nhóm Slowth.",
-  "mail_subject": "Xóa các tập tin Slowth của tôi"
+  "mail_subject": "Xóa các tập tin Slowth của tôi",
+  "pause_server": "Máy chủ tạm thời không khả dụng. Thử lại sau {seconds} giây.",
+  "pause_limit": "Đã đạt giới hạn tải lên. Thử lại sau {seconds} giây.",
+  "pause_retry": "Thử lại"
 }

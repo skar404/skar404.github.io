@@ -146,5 +146,8 @@
   "tag_feed": "ソーシャルメディアフィード",
   "tag_stories": "ストーリーズ",
   "tag_ads": "広告",
-  "tag_other": "その他"
+  "tag_other": "その他",
+  "pause_server": "サーバーは一時的に利用できません。{seconds} 秒後に再試行してください。",
+  "pause_limit": "アップロード上限に達しました。{seconds} 秒後に再試行してください。",
+  "pause_retry": "再試行"
 }

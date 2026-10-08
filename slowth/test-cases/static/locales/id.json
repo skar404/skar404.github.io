@@ -146,5 +146,8 @@
   "text_100": "Menampilkan feed postingan, profil, pencarian, atau video panjang. Contoh-contoh ini membantu Slowth menghindari pemblokiran konten normal.",
   "text_114": "Lebih lanjut tentang Slowth",
   "api_quota_exceeded": "Batas unggahan tercapai. Hubungi tim Slowth.",
-  "mail_subject": "Hapus file Slowth saya"
+  "mail_subject": "Hapus file Slowth saya",
+  "pause_server": "Server sementara tidak tersedia. Coba lagi dalam {seconds} dtk.",
+  "pause_limit": "Batas unggahan tercapai. Coba lagi dalam {seconds} dtk.",
+  "pause_retry": "Coba lagi"
 }

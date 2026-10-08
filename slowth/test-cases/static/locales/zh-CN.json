@@ -146,5 +146,8 @@
   "tag_feed": "社交媒体动态",
   "tag_stories": "快拍",
   "tag_ads": "广告",
-  "tag_other": "其他"
+  "tag_other": "其他",
+  "pause_server": "服务器暂时不可用。请在 {seconds} 秒后重试。",
+  "pause_limit": "已达到上传上限。请在 {seconds} 秒后重试。",
+  "pause_retry": "重试"
 }

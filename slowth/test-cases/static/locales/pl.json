@@ -146,5 +146,8 @@
   "text_100": "Pokaż kanał postów, profil, wyszukiwanie lub długi film. Te przykłady pomagają Slowth uniknąć blokowania normalnej zawartości.",
   "text_114": "Więcej o Slowth",
   "api_quota_exceeded": "Osiągnięto limit przesyłania. Skontaktuj się z zespołem Slowth.",
-  "mail_subject": "Usuń moje pliki Slowth"
+  "mail_subject": "Usuń moje pliki Slowth",
+  "pause_server": "Serwer jest chwilowo niedostępny. Spróbuj za {seconds} s.",
+  "pause_limit": "Osiągnięto limit przesyłania. Spróbuj za {seconds} s.",
+  "pause_retry": "Spróbuj ponownie"
 }

@@ -146,5 +146,8 @@
   "text_100": "Rodyti įrašo sklaidos kanalą, profilį, paiešką arba ilgą vaizdo įrašą. Šie pavyzdžiai padeda Slowth išvengti įprasto turinio blokavimo.",
   "text_114": "Daugiau apie Slowth",
   "api_quota_exceeded": "Pasiektas įkėlimo limitas. Susisiekite su Slowth komanda.",
-  "mail_subject": "Ištrinti mano Slowth failus"
+  "mail_subject": "Ištrinti mano Slowth failus",
+  "pause_server": "Serveris laikinai nepasiekiamas. Bandykite po {seconds} s.",
+  "pause_limit": "Pasiektas įkėlimų limitas. Bandykite po {seconds} s.",
+  "pause_retry": "Bandyti dar kartą"
 }

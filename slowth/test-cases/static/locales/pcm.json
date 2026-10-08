@@ -146,5 +146,8 @@
   "tag_feed": "Feed",
   "tag_stories": "Stories",
   "tag_ads": "Adverts",
-  "tag_other": "Other"
+  "tag_other": "Other",
+  "pause_server": "Server no dey available for now. Try again after {seconds} seconds.",
+  "pause_limit": "You don reach upload limit. Try again after {seconds} seconds.",
+  "pause_retry": "Try again"
 }

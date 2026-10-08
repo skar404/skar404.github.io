@@ -146,5 +146,8 @@
   "text_100": "Toon een berichtfeed, profiel, zoekopdracht of lange video. Met deze voorbeelden kan Slowth voorkomen dat normale inhoud wordt geblokkeerd.",
   "text_114": "Meer over Slowth",
   "api_quota_exceeded": "Uploadlimiet bereikt. Neem contact op met het Slowth-team.",
-  "mail_subject": "Verwijder mijn Slowth-bestanden"
+  "mail_subject": "Verwijder mijn Slowth-bestanden",
+  "pause_server": "Server tijdelijk niet beschikbaar. Probeer het over {seconds} s opnieuw.",
+  "pause_limit": "Uploadlimiet bereikt. Probeer het over {seconds} s opnieuw.",
+  "pause_retry": "Opnieuw proberen"
 }

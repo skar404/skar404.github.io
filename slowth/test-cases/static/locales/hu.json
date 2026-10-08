@@ -146,5 +146,8 @@
   "text_100": "Bejegyzés feed, profil, keresés vagy hosszú videó megjelenítése. Ezek a példák segítenek a Slowth-nek elkerülni a normál tartalom blokkolását.",
   "text_114": "További információ a Slowth-ről",
   "api_quota_exceeded": "Elérte a feltöltési korlátot. Vegye fel a kapcsolatot a Slowth csapatával.",
-  "mail_subject": "Törölje a Slowth fájljaimat"
+  "mail_subject": "Törölje a Slowth fájljaimat",
+  "pause_server": "A szerver átmenetileg nem érhető el. Próbálja újra {seconds} mp múlva.",
+  "pause_limit": "Elérte a feltöltési korlátot. Próbálja újra {seconds} mp múlva.",
+  "pause_retry": "Újrapróbálkozás"
 }

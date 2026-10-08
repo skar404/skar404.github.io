@@ -146,5 +146,8 @@
   "text_100": "Magpakita ng post feed, profile, paghahanap, o mahabang video. Ang mga halimbawang ito ay tumutulong sa Slowth na maiwasan ang pagharang sa normal na nilalaman.",
   "text_114": "Higit pa tungkol sa Slowth",
   "api_quota_exceeded": "Naabot na ang limitasyon sa pag-upload. Makipag-ugnayan sa Slowth team.",
-  "mail_subject": "Tanggalin ang aking Slowth file"
+  "mail_subject": "Tanggalin ang aking Slowth file",
+  "pause_server": "Pansamantalang hindi available ang server. Subukan muli pagkalipas ng {seconds} s.",
+  "pause_limit": "Naabot ang limitasyon sa pag-upload. Subukan muli pagkalipas ng {seconds} s.",
+  "pause_retry": "Subukan muli"
 }

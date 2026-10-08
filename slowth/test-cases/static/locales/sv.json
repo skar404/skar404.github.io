@@ -146,5 +146,8 @@
   "text_100": "Visa ett inläggsflöde, profil, sökning eller lång video. Dessa exempel hjälper Slowth att undvika att blockera normalt innehåll.",
   "text_114": "Mer om Slowth",
   "api_quota_exceeded": "Uppladdningsgräns nådd. Kontakta Slowth-teamet.",
-  "mail_subject": "Ta bort mina Slowth-filer"
+  "mail_subject": "Ta bort mina Slowth-filer",
+  "pause_server": "Servern är tillfälligt otillgänglig. Försök igen om {seconds} s.",
+  "pause_limit": "Uppladdningsgränsen har nåtts. Försök igen om {seconds} s.",
+  "pause_retry": "Försök igen"
 }

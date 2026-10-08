@@ -146,5 +146,8 @@
   "text_100": "Vis et indlægsfeed, profil, søgning eller lang video. Disse eksempler hjælper Slowth med at undgå at blokere normalt indhold.",
   "text_114": "Mere om Slowth",
   "api_quota_exceeded": "Uploadgrænsen er nået. Kontakt Slowth-teamet.",
-  "mail_subject": "Slet mine Slowth-filer"
+  "mail_subject": "Slet mine Slowth-filer",
+  "pause_server": "Serveren er midlertidigt utilgængelig. Prøv igen om {seconds} s.",
+  "pause_limit": "Uploadgrænsen er nået. Prøv igen om {seconds} s.",
+  "pause_retry": "Prøv igen"
 }

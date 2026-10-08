@@ -146,5 +146,8 @@
   "text_100": "Afișează un flux de postare, un profil, o căutare sau un videoclip lung. Aceste exemple ajută Slowth să evite blocarea conținutului normal.",
   "text_114": "Mai multe despre Slowth",
   "api_quota_exceeded": "Limita de încărcare a fost atinsă. Contactați echipa Slowth.",
-  "mail_subject": "Ștergeți fișierele mele Slowth"
+  "mail_subject": "Ștergeți fișierele mele Slowth",
+  "pause_server": "Server temporar indisponibil. Reîncercați peste {seconds} s.",
+  "pause_limit": "Limita de încărcări a fost atinsă. Reîncercați peste {seconds} s.",
+  "pause_retry": "Reîncercați"
 }

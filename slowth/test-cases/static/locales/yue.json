@@ -146,5 +146,8 @@
   "tag_feed": "動態消息",
   "tag_stories": "限時動態",
   "tag_ads": "廣告",
-  "tag_other": "其他"
+  "tag_other": "其他",
+  "pause_server": "伺服器暫時用唔到。請等 {seconds} 秒再試。",
+  "pause_limit": "已達上傳上限。請等 {seconds} 秒再試。",
+  "pause_retry": "再試"
 }

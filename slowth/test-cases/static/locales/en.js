@@ -148,5 +148,8 @@ window.SLOWTH_EN = {
   "tag_feed": "Feed",
   "tag_stories": "Stories",
   "tag_ads": "Ads",
-  "tag_other": "Other"
+  "tag_other": "Other",
+  "pause_server": "Server temporarily unavailable. Try again in {seconds} s.",
+  "pause_limit": "Upload limit reached. Try again in {seconds} s.",
+  "pause_retry": "Retry"
 };

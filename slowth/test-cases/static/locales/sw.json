@@ -146,5 +146,8 @@
   "text_100": "Onyesha mpasho wa chapisho, wasifu, utafutaji au video ndefu. Mifano hii husaidia Slowth kuepuka kuzuia maudhui ya kawaida.",
   "text_114": "Zaidi kuhusu Slowth",
   "api_quota_exceeded": "Kikomo cha upakiaji kimefikiwa. Wasiliana na timu ya Slowth.",
-  "mail_subject": "Futa faili zangu za Slowth"
+  "mail_subject": "Futa faili zangu za Slowth",
+  "pause_server": "Seva haipatikani kwa muda. Jaribu tena baada ya sekunde {seconds}.",
+  "pause_limit": "Kikomo cha upakiaji kimefikiwa. Jaribu tena baada ya sekunde {seconds}.",
+  "pause_retry": "Jaribu tena"
 }

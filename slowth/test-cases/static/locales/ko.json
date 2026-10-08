@@ -146,5 +146,8 @@
   "tag_feed": "소셜 미디어 피드",
   "tag_stories": "스토리",
   "tag_ads": "광고",
-  "tag_other": "기타"
+  "tag_other": "기타",
+  "pause_server": "서버를 일시적으로 사용할 수 없습니다. {seconds}초 후 다시 시도하세요.",
+  "pause_limit": "업로드 한도에 도달했습니다. {seconds}초 후 다시 시도하세요.",
+  "pause_retry": "다시 시도"
 }

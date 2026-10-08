@@ -146,5 +146,8 @@
   "text_100": "Afficher un flux de publication, un profil, une recherche ou une longue vidéo. Ces exemples aident Slowth à éviter de bloquer le contenu normal.",
   "text_114": "En savoir plus sur Slowth",
   "api_quota_exceeded": "Limite de téléchargement atteinte. Contactez l'équipe Slowth.",
-  "mail_subject": "Supprimer mes fichiers Slowth"
+  "mail_subject": "Supprimer mes fichiers Slowth",
+  "pause_server": "Serveur temporairement indisponible. Réessayez dans {seconds} s.",
+  "pause_limit": "Limite d’envois atteinte. Réessayez dans {seconds} s.",
+  "pause_retry": "Réessayer"
 }
