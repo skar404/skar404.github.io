@@ -3,7 +3,9 @@
 // All messages, including errors, remain descriptors until rendered. Locale changes
 // only touch bound text nodes/attributes: no upload, form, draft or timer is reset.
 const I18n = (() => {
-  const assetBase = new URL("./", document.currentScript.src);
+  const scriptURL = new URL(document.currentScript.src);
+  const assetBase = new URL("./", scriptURL);
+  const assetVersion = scriptURL.search;
   const locales = {"ar": "العربية", "ar-EG": "العربية (مصر)", "be": "Беларуская", "bn": "বাংলা", "cs": "Čeština", "da": "Dansk", "de": "Deutsch", "en": "English", "es": "Español", "fil": "Filipino", "fr": "Français", "ha": "Hausa", "he": "עברית", "hi": "हिन्दी", "hu": "Magyar", "hy": "Հայերեն", "id": "Bahasa Indonesia", "it": "Italiano", "ja": "日本語", "ka": "ქართული", "kk": "Қазақша", "ko": "한국어", "ky": "Кыргызча", "lt": "Lietuvių", "mr": "मराठी", "ne": "नेपाली", "nl": "Nederlands", "pa-Arab": "پنجابی (شاہ مکھی)", "pcm": "Naijá", "pl": "Polski", "pt-BR": "Português (Brasil)", "pt-PT": "Português (Portugal)", "ro": "Română", "ru": "Русский", "sv": "Svenska", "sw": "Kiswahili", "ta": "தமிழ்", "te": "తెలుగు", "th": "ไทย", "tr": "Türkçe", "uk": "Українська", "ur": "اردو", "vi": "Tiếng Việt", "yue": "粵語", "zh-CN": "简体中文", "zh-TW": "繁體中文"};
   const english = Object.freeze(window.SLOWTH_EN);
   const rtl = new Set(["ar", "ar-EG", "he", "pa-Arab", "ur"]);
@@ -77,7 +79,9 @@ const I18n = (() => {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 8000);
     try {
-      const response = await fetch(new URL(`locales/${locale}.json`, assetBase), { signal: controller.signal, credentials: "same-origin" });
+      const dictionaryURL = new URL(`locales/${locale}.json`, assetBase);
+      dictionaryURL.search = assetVersion;
+      const response = await fetch(dictionaryURL, { signal: controller.signal, credentials: "same-origin" });
       if (!response.ok) throw new Error("Dictionary unavailable");
       const candidate = await response.json();
       if (!validDictionary(candidate)) throw new Error("Invalid dictionary");
