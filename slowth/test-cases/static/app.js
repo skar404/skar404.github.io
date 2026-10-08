@@ -17,19 +17,58 @@ const identity = (item) => item.record?.id || item.body.request_id;
 const info = (item) => item.record || item.body;
 const finalizing = (item) => ["completing", "finalizing", "complete"].includes(item.record?.status);
 
-async function api(path, { method = "GET", body } = {}) {
+// Five API requests per browser identity across same-origin tabs. Distinct cases
+// can save concurrently; a case lock serializes writes/repair for the same case.
+const apiSlots = Array.from({ length: 5 }, () => Promise.resolve());
+const apiDepth = Array(5).fill(0);
+function api(path, options = {}) {
+  const slot = apiDepth.indexOf(Math.min(...apiDepth));
+  apiDepth[slot]++;
+  const run = async () => {
+    const request = () => requestApi(path, options);
+    if (!navigator.locks || !config?.user_id) return request();
+    const owner = `slowth-api:${config.user_id}`;
+    const caseId = path.match(/^\/uploads\/([^/]+)/)?.[1]
+      || (path === "/uploads" && options.method === "POST" ? options.body?.request_id : null);
+    const execute = () => navigator.locks.request(`${owner}:slot:${slot}`, request);
+    // Case lock comes first so duplicate case requests don't occupy all slots.
+    const scoped = () => caseId
+      ? navigator.locks.request(`${owner}:case:${caseId}`, execute) : execute();
+    return path === "/uploads" && options.method === "POST"
+      ? navigator.locks.request(`${owner}:starts`, scoped) : scoped();
+  };
+  const result = apiSlots[slot].then(run);
+  apiSlots[slot] = result.catch(() => {}).finally(() => { apiDepth[slot]--; });
+  return result;
+}
+
+async function requestApi(path, { method = "GET", body } = {}) {
+  for (let attempt = 0; ; attempt++) {
+    try { return await fetchApi(path, { method, body }); }
+    catch (error) {
+      // A competing tab/client or annotation repair can briefly own the server lock.
+      // Hourly and per-minute budgets are not lock contention and are not retried here.
+      if (error.reason !== "user_busy" || attempt >= 4) throw error;
+      await new Promise((resolve) => setTimeout(resolve, error.retryAfter * 1000));
+    }
+  }
+}
+
+async function fetchApi(path, { method = "GET", body } = {}) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 180000);
   try {
     const response = await fetch(`${apiOrigin}/api${path}`, {
       method, credentials: "include", signal: controller.signal,
       headers: { "Content-Type": "application/json", "X-Requested-With": "case-saver" },
-      ...(body === undefined ? {} : { body: JSON.stringify(body) }),
+      ...(body === undefined ? {} : { body: JSON.stringify(typeof body === "function" ? body() : body) }),
     });
     const data = await response.json().catch(() => ({}));
     if (!response.ok) {
       const error = new LocalizedError(I18n.apiError(data.code));
       error.status = response.status;
+      error.reason = data.reason;
+      error.retryAfter = Math.min(10, Math.max(1, Number(response.headers.get("Retry-After")) || 2));
       throw error;
     }
     if (data.server_time) serverOffset = data.server_time - Date.now() / 1000;
@@ -398,8 +437,12 @@ async function saveAnnotation(id) {
   clearTimeout(state.timer);
   if (state.saving) { state.saveAgain = true; return; }
   if (!dirty(state)) return;
-  const revision = state.revision;
-  const body = { applications: [...state.draft.applications], content_types: [...state.draft.content_types] };
+  let revision;
+  // Snapshot when the queued request is actually sent, coalescing intervening edits.
+  const body = () => {
+    revision = state.revision;
+    return { applications: [...state.draft.applications], content_types: [...state.draft.content_types] };
+  };
   state.saving = true; state.error = "";
   updateAnnotationUI(id); updateHistoryControls(); updateBulk();
   try {
