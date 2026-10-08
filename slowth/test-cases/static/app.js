@@ -28,12 +28,14 @@ function api(path, options = {}) {
     const request = () => requestApi(path, options);
     if (!navigator.locks || !config?.user_id) return request();
     const owner = `slowth-api:${config.user_id}`;
-    const caseId = path.match(/^\/uploads\/([^/]+)/)?.[1]
+    const caseId = path === "/uploads/annotations" ? null : path.match(/^\/uploads\/([^/]+)/)?.[1]
       || (path === "/uploads" && options.method === "POST" ? options.body?.request_id : null);
+    const caseIds = [...new Set(options.caseIds || (caseId ? [caseId] : []))].sort();
     const execute = () => navigator.locks.request(`${owner}:slot:${slot}`, request);
-    // Case lock comes first so duplicate case requests don't occupy all slots.
-    const scoped = () => caseId
-      ? navigator.locks.request(`${owner}:case:${caseId}`, execute) : execute();
+    // Acquire multiple case locks in stable order, before the request slot.
+    const lockCase = (index) => index === caseIds.length ? execute()
+      : navigator.locks.request(`${owner}:case:${caseIds[index]}`, () => lockCase(index + 1));
+    const scoped = () => lockCase(0);
     return path === "/uploads" && options.method === "POST"
       ? navigator.locks.request(`${owner}:starts`, scoped) : scoped();
   };
@@ -42,9 +44,13 @@ function api(path, options = {}) {
   return result;
 }
 
-async function requestApi(path, { method = "GET", body } = {}) {
+async function requestApi(path, { method = "GET", body, skip } = {}) {
   for (let attempt = 0; ; attempt++) {
-    try { return await fetchApi(path, { method, body }); }
+    try {
+      const unchanged = skip?.();
+      if (unchanged) return unchanged;
+      return await fetchApi(path, { method, body });
+    }
     catch (error) {
       // A competing tab/client or annotation repair can briefly own the server lock.
       // Hourly and per-minute budgets are not lock contention and are not retried here.
@@ -314,7 +320,10 @@ const annotationStates = new Map(), selectedVideos = new Set();
 let restoredAnnotations = {};
 const annotationKey = () => `slowth-annotations:${config.user_id}`;
 const annotationValue = (row) => ({ applications: row.applications || (row.application ? [row.application] : []), content_types: row.content_types || [] });
-const dirty = (state) => state.revision !== state.savedRevision;
+const annotationFingerprint = (value) => JSON.stringify({
+  applications: [...value.applications].sort(), content_types: [...value.content_types].sort(),
+});
+const dirty = (state) => annotationFingerprint(state.draft) !== state.savedFingerprint;
 
 function persistAnnotations() {
   try {
@@ -329,8 +338,8 @@ function getAnnotation(row) {
     const valid = draft && Array.isArray(draft.applications) && Array.isArray(draft.content_types) &&
       draft.applications.length <= config.max_application_tags && draft.applications.every(validApplication) &&
       draft.content_types.every((tag) => Object.hasOwn(config.content_types, tag));
-    const restored = valid && JSON.stringify(draft) !== JSON.stringify(saved);
-    const state = { draft: restored ? draft : saved, revision: restored ? 1 : 0, savedRevision: 0, saving: false, deleting: false, timer: null, editor: null, error: "", lastChange: Date.now(), saveAgain: false };
+    const restored = valid && annotationFingerprint(draft) !== annotationFingerprint(saved);
+    const state = { draft: restored ? draft : saved, revision: restored ? 1 : 0, savedRevision: 0, savedFingerprint: annotationFingerprint(saved), saving: false, deleting: false, timer: null, editor: null, error: "", lastChange: Date.now() };
     annotationStates.set(row.id, state);
     if (restored) scheduleAnnotation(row.id);
   }
@@ -394,16 +403,30 @@ function tagGroup(name, title, options, onChange) {
   return fieldset;
 }
 
+const pendingAnnotations = new Set();
+let annotationFlush;
+function enqueueAnnotation(id) {
+  pendingAnnotations.add(id);
+  clearTimeout(annotationFlush);
+  annotationFlush = setTimeout(() => {
+    const ids = [...pendingAnnotations]; pendingAnnotations.clear();
+    saveAnnotations(ids);
+  }, 50);
+}
+
 function scheduleAnnotation(id) {
   const state = annotationStates.get(id);
   clearTimeout(state.timer);
-  state.timer = setTimeout(() => saveAnnotation(id), Math.max(0, state.lastChange + 5000 - Date.now()));
+  if (dirty(state) && !state.saving && !state.deleting) {
+    state.timer = setTimeout(() => enqueueAnnotation(id), Math.max(0, state.lastChange + 5000 - Date.now()));
+  }
 }
 
 function changeAnnotation(id, field, value, checked) {
   const state = annotationStates.get(id);
   if (!state || state.deleting) return;
   const values = new Set(state.draft[field]);
+  if (values.has(value) === checked) return;
   if (checked && field === "applications" && !values.has(value) && values.size >= config.max_application_tags) {
     state.error = m("text_034", {p0: config.max_application_tags});
     updateAnnotationUI(id); updateBulk(); return;
@@ -428,37 +451,76 @@ function updateAnnotationUI(id) {
     state.saving ? m("text_036") : dirty(state) ? m("text_037") :
     state.savedRevision ? m("text_038") : m("text_039"));
   message.classList.toggle("error", Boolean(state.error));
-  state.editor.querySelector("button[type=submit]").disabled = !dirty(state) || state.deleting;
+  state.editor.querySelector("button[type=submit]").disabled = !dirty(state) || state.saving || state.deleting;
 }
 
-async function saveAnnotation(id) {
-  const state = annotationStates.get(id);
-  if (!state || state.deleting) return;
-  clearTimeout(state.timer);
-  if (state.saving) { state.saveAgain = true; return; }
-  if (!dirty(state)) return;
-  let revision;
-  // Snapshot when the queued request is actually sent, coalescing intervening edits.
+function saveAnnotation(id) { return saveAnnotations([id]); }
+
+async function saveAnnotations(ids, attempt = 0) {
+  const entries = [...new Set(ids)].map((id) => ({ id, state: annotationStates.get(id) }))
+    .filter(({ state }) => state && !state.deleting && !state.saving && dirty(state));
+  const groups = [];
+  for (let i = 0; i < entries.length; i += 5) groups.push(entries.slice(i, i + 5));
+  await Promise.all(groups.map((group) => saveAnnotationGroup(group, attempt)));
+}
+
+async function saveAnnotationGroup(entries, attempt) {
+  const single = entries.length === 1;
+  const retry = [];
+  for (const { id, state } of entries) {
+    clearTimeout(state.timer); pendingAnnotations.delete(id);
+    state.saving = true; state.error = ""; updateAnnotationUI(id);
+  }
+  updateHistoryControls(); updateBulk();
   const body = () => {
-    revision = state.revision;
-    return { applications: [...state.draft.applications], content_types: [...state.draft.content_types] };
+    const items = entries.filter(({ state }) => dirty(state)).map((entry) => {
+      entry.revision = entry.state.revision;
+      return { upload_id: entry.id, applications: [...entry.state.draft.applications],
+        content_types: [...entry.state.draft.content_types] };
+    });
+    if (!single) return { items };
+    const { upload_id, ...annotation } = items[0];
+    return annotation;
   };
-  state.saving = true; state.error = "";
-  updateAnnotationUI(id); updateHistoryControls(); updateBulk();
   try {
-    const saved = await api(`/uploads/${id}/annotation`, { method: "PATCH", body });
-    state.savedRevision = revision;
-    if (state.revision === revision) state.draft = annotationValue(saved);
-    historyRows = historyRows.map((row) => row.id === id ? saved : row);
-    renderHistory();
-  } catch (error) { state.error = localizedError(error); }
-  finally {
-    state.saving = false;
-    persistAnnotations(); updateAnnotationUI(id); updateHistoryControls(); updateBulk();
-    const again = state.saveAgain; state.saveAgain = false;
-    if (dirty(state) && !state.error && !state.deleting) {
-      if (again) saveAnnotation(id); else scheduleAnnotation(id);
+    const response = await api(single ? `/uploads/${entries[0].id}/annotation` : "/uploads/annotations", {
+      method: single ? "PATCH" : "POST", body, caseIds: entries.map(({ id }) => id),
+      skip: () => {
+        if (entries.some(({ state }) => dirty(state))) return null;
+        for (const entry of entries) entry.revision = entry.state.revision;
+        const results = entries.map(({ id }) => ({ id, upload: historyRows.find((row) => row.id === id) }));
+        return single ? results[0].upload : { results };
+      },
+    });
+    const results = single ? [{ id: entries[0].id, upload: response }] : response.results;
+    for (const result of results) {
+      const entry = entries.find(({ id }) => id === result.id);
+      if (!entry) continue;
+      const { state, revision } = entry;
+      if (result.error) {
+        state.error = I18n.apiError(result.error.code);
+        if (result.error.reason === "user_busy" && attempt < 4) retry.push(entry.id);
+        continue;
+      }
+      const saved = result.upload;
+      state.savedFingerprint = annotationFingerprint(annotationValue(saved));
+      state.savedRevision = revision;
+      if (state.revision === revision) state.draft = annotationValue(saved);
+      historyRows = historyRows.map((row) => row.id === entry.id ? saved : row);
     }
+    renderHistory();
+  } catch (error) {
+    for (const { state } of entries) state.error = localizedError(error);
+  } finally {
+    for (const { id, state } of entries) {
+      state.saving = false; updateAnnotationUI(id);
+      if (dirty(state) && !state.error && !state.deleting) scheduleAnnotation(id);
+    }
+    persistAnnotations(); updateHistoryControls(); updateBulk();
+  }
+  if (retry.length) {
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    await saveAnnotations(retry, attempt + 1);
   }
 }
 
@@ -494,7 +556,7 @@ function buildBulk() {
     if (event.target.checked) for (const row of historyRows) if (row.status === "complete") selectedVideos.add(row.id);
     updateBulk();
   };
-  $("bulk-save").onclick = () => { for (const id of selectedVideos) saveAnnotation(id); };
+  $("bulk-save").onclick = () => saveAnnotations([...selectedVideos]);
 }
 
 function updateBulk() {
@@ -583,7 +645,9 @@ function renderHistory() {
     }
     const annotation = annotationStates.get(row.id);
     if (annotation && !dirty(annotation) && !annotation.saving) {
-      annotation.draft = annotationValue(row); updateAnnotationUI(row.id);
+      annotation.draft = annotationValue(row);
+      annotation.savedFingerprint = annotationFingerprint(annotation.draft);
+      updateAnnotationUI(row.id);
     }
     I18n.bind(article.querySelector("h3"), row.filename);
     const annotated = Boolean(annotationValue(row).applications.length || row.content_types?.length);
