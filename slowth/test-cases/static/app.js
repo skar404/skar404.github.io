@@ -186,6 +186,7 @@ async function uploadOne(item) {
   }
   item.record = row; saveQueue();
   if (row.status === "complete") return row;
+  if (row.status === "creating") throw new LocalizedError(m("api_file_reconciling"));
   if (row.status === "deleting") throw new LocalizedError(m("text_020"));
   if (row.expires_at <= now()) throw new LocalizedError(m("text_021"));
   if (row.status === "pending") {
