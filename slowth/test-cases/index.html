@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src &#x27;self&#x27;; script-src &#x27;self&#x27;; style-src &#x27;self&#x27;; connect-src &#x27;self&#x27; https://api-slowth-cases.malina.page https://s3.eu-central-003.backblazeb2.com; img-src &#x27;self&#x27; data:; object-src &#x27;none&#x27;; base-uri &#x27;self&#x27;; form-action &#x27;self&#x27;">
+  <meta name="referrer" content="no-referrer">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0F0820">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Help train Slowth</title>
+  <link rel="icon" href="./static/favicon.ico?v=slowth-app-1" type="image/x-icon" sizes="16x16 32x32 64x64 256x256">
+  <link rel="apple-touch-icon" href="./static/slowth-apple-touch-icon.png" sizes="180x180">
+  <link rel="stylesheet" href="./static/style.css">
+  <script src="./static/config.js" defer></script>
+  <script src="./static/locales/en.js" defer></script>
+  <script src="./static/i18n.js" defer></script>
+  <script src="./static/app.js" defer></script>
+</head>
+<body>
+  <div class="shell">
+    <header class="header">
+      <a class="brand" href="./" aria-label="Slowth — home" data-i18n-aria-label="text_069">
+        <img class="brand-icon" src="./static/slowth-icon.png" alt="" width="64" height="64">
+        <span class="brand-text"><span class="brand-name">Slowth</span><span class="brand-caption"><span data-i18n="text_070">Dataset collection</span></span></span>
+      </a>
+      <nav class="nav" aria-label="Navigation" data-i18n-aria-label="text_071">
+        <a href="#case-form"><span data-i18n="text_072">Submit an example</span></a>
+        <a href="#history-title"><span data-i18n="text_073">My files</span></a>
+        <a href="https://malina.page/slowth/" target="_blank" rel="noopener noreferrer"><span data-i18n="text_074">About Slowth</span> <span aria-hidden="true">↗</span></a>
+      </nav>
+      <label class="language-picker"><span data-i18n="language">Language</span><select id="language" dir="auto"></select></label>
+    </header>
+    <main>
+      <section class="intro">
+        <h1><span data-i18n="text_068">Help train Slowth</span></h1>
+        <p class="intro-text"><span data-i18n="text_075">We are collecting screen recordings and screenshots of social media apps. They will help the neural network distinguish short videos that Slowth should block from normal app use.</span></p>
+        <div class="intro-notes"><span><span class="note-dot" aria-hidden="true"></span><span data-i18n="text_076">No registration</span></span><span><span data-i18n="text_077">Files stay private</span></span><span><span data-i18n="text_078">One hour to delete</span></span></div>
+      </section>
+
+      <div class="layout">
+        <form id="case-form" class="form-card">
+          <fieldset id="form-fields" disabled>
+            <section class="form-section upload-section">
+              <div class="section-heading"><span class="step" aria-hidden="true">↗</span><div><h2><span data-i18n="text_079">Your files</span></h2><p><span data-i18n="text_080">Select several files at once.</span></p></div></div>
+              <label class="drop-zone" id="drop-zone" for="video">
+                <input id="video" type="file" multiple accept=".mp4,.mov,.m4v,.webm,.png,.jpg,.jpeg,.webp,.heic,.heif,video/mp4,video/quicktime,video/x-m4v,video/webm,image/png,image/jpeg,image/webp,image/heic,image/heif">
+                <span class="upload-icon" aria-hidden="true"><svg width="28" height="28" viewbox="0 0 24 24" fill="none"><path d="M12 16V4m0 0L7 9m5-5 5 5M4 15v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
+                <strong id="file-label"><span data-i18n="text_081">Choose files</span> <span><span data-i18n="text_082">or drag them here</span></span></strong>
+                <span id="file-help"><span data-i18n="text_083">Videos and images · up to 10 GB each</span></span>
+              </label>
+              <p id="queue-summary" class="queue-summary" aria-live="polite"></p>
+              <div id="queue-list" class="queue-list"></div>
+              <button id="submit" class="button submit" type="submit"><span data-i18n="text_011">Upload files</span> <span aria-hidden="true">↗</span></button>
+            </section>
+          </fieldset>
+          <section id="upload-state" class="upload-state" hidden aria-live="polite" aria-atomic="true">
+            <div class="progress-heading"><strong id="status-title"><span data-i18n="text_084">Preparing…</span></strong><span id="percent"></span></div>
+            <progress id="progress" max="100" value="0" aria-label="File upload" data-i18n-aria-label="text_085"></progress>
+            <p id="status-detail"></p>
+            <div class="state-actions"><button id="pause" type="button" class="text-button" hidden><span data-i18n="text_086">Pause</span></button></div>
+          </section>
+          <p id="form-error" class="form-error error" role="alert" hidden></p>
+          <section id="success" class="success" hidden role="status"><span class="success-icon" aria-hidden="true">✓</span><h2><span data-i18n="text_087">Files saved. Thank you!</span></h2><p><span data-i18n="text_088">You can finish here or add annotations to your files below.</span></p><a class="text-button" href="#history-title"><span data-i18n="text_089">Go to uploaded files ↓</span></a></section>
+          <section class="data-safety" aria-labelledby="data-safety-title">
+            <h2 id="data-safety-title"><span data-i18n="text_090">Data safety</span></h2>
+            <p><span data-i18n="text_091">We store files in private Backblaze B2 storage. We use them to train and test the Slowth neural network.</span></p>
+            <p><span data-i18n="text_092">We do not publish or sell your files, or share them with other companies for their use.</span></p>
+            <p><span data-i18n="text_093">You can delete a file yourself within one hour of uploading. After that, request deletion by emailing</span> <a id="deletion-email" href="mailto:denis@malina.page" dir="ltr">denis@malina.page</a> <span data-i18n="text_094">and include your visitor ID:</span> <span id="deletion-visitor-id" dir="ltr">…</span>.</p>
+          </section>
+        </form>
+
+        <aside class="guide" aria-labelledby="guide-title">
+          <div id="recording-guide">
+            <div class="guide-kicker"><span class="eyebrow"><span data-i18n="text_095">BEFORE RECORDING</span></span></div>
+            <h2 id="guide-title" class="guide-title"><span data-i18n="text_096">What to record</span></h2>
+            <div class="guide-content">
+              <ol class="guide-list">
+                <li><strong><span data-i18n="text_097">Short videos.</span></strong><p><span data-i18n="text_098">Open Reels, Shorts, TikTok, or a similar feed. Scroll through a few videos.</span></p></li>
+                <li><strong><span data-i18n="text_099">Normal app use.</span></strong><p><span data-i18n="text_100">Show a post feed, profile, search, or long video. These examples help Slowth avoid blocking normal content.</span></p></li>
+                <li><strong><span data-i18n="text_101">Upload your files.</span></strong><p><span data-i18n="text_102">Record for 15–60 seconds or take full-screen screenshots. You can upload multiple files and optionally label their apps and content types.</span></p></li>
+              </ol>
+              <p class="privacy-note"><span data-i18n="text_103">Record the whole screen without cropping. Turn on Do Not Disturb and avoid showing personal information.</span></p>
+            </div>
+          </div>
+        </aside>
+      </div>
+      <section class="history" aria-labelledby="history-title">
+        <div class="history-heading"><div><p class="eyebrow"><span data-i18n="text_104">UPLOADED FROM THIS BROWSER</span></p><h2 id="history-title"><span data-i18n="text_079">Your files</span></h2></div><button type="button" id="refresh" class="text-button"><span data-i18n="text_105">Refresh</span></button></div>
+        <p class="history-note"><span data-i18n="text_106">Select apps and content types — you can choose several. Annotations are optional and saved 5 seconds after a change or when you click Save. You can delete files yourself within one hour; after that, request deletion by email. Keep this site&#x27;s cookies to retain access to your files.</span></p>
+        <p id="history-error" class="error" role="alert" hidden></p>
+        <section id="bulk-annotation" class="bulk-annotation" aria-labelledby="bulk-title" hidden>
+          <div class="bulk-heading"><h3 id="bulk-title"><span data-i18n="text_107">Annotate multiple files</span></h3><span id="bulk-count"></span></div>
+          <label class="case-selection"><input id="select-all" type="checkbox"><span data-i18n="text_108">Select all uploaded files</span></label>
+          <p class="bulk-hint"><span data-i18n="text_109">Add or remove tags for the selected files. Other tags will stay unchanged. A partially filled checkbox means only some selected files have that tag.</span></p>
+          <fieldset id="bulk-fields" disabled><legend class="sr-only"><span data-i18n="text_110">Tags for selected files</span></legend></fieldset>
+          <div class="annotation-actions"><button id="bulk-save" type="button" class="text-button" disabled><span data-i18n="text_111">Save selected now</span></button><p id="bulk-status" role="status"></p></div>
+        </section>
+        <div id="history-list"><p class="empty-history"><span data-i18n="text_112">Your uploads will appear here.</span></p></div>
+        <p class="visitor"><span data-i18n="text_113">Your visitor ID:</span> <span id="visitor-id" dir="ltr">…</span></p>
+      </section>
+    </main>
+    <footer><span>© 2026 Slowth.</span><a href="https://malina.page/slowth/" target="_blank" rel="noopener noreferrer"><span data-i18n="text_114">More about Slowth</span> <span aria-hidden="true">↗</span></a></footer>
+  </div>
+</body>
+</html>
