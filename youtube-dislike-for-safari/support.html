@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Zorro — Support</title>
+  <meta name="description" content="Set up Zorro in Safari, check a YouTube link from the share sheet, manage vote submission, and get help." />
+  <link rel="canonical" href="https://malina.page/youtube-dislike-for-safari/support.html" />
+  <link rel="icon" type="image/png" href="img/icon.png" />
+  <link rel="apple-touch-icon" href="img/icon.png" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="shell">
+  <a class="back-link" href="../">← All projects</a>
+  <header class="hero">
+    <img class="hero-icon" src="img/icon.png" alt="Zorro fox app icon" width="84" height="84" />
+    <div><h1>Zorro</h1><div class="tag">Support</div></div>
+  </header>
+  <nav class="nav" aria-label="Zorro">
+    <a href="./">Home</a>
+    <a href="support.html" aria-current="page">Support</a>
+    <a href="privacy.html">Privacy</a>
+    <a href="https://github.com/skar404/youtube-dislike-for-safari">GitHub</a>
+  </nav>
+  <main id="main">
+    <p class="lede">A few steps, and you’re ready. Start with your device below, or get in touch if something isn’t working.</p>
+    <h2 id="setup">Set up Safari</h2>
+    <h3>iPhone &amp; iPad</h3>
+    <ol>
+      <li>After installing Zorro, open <b>Settings → Apps → Safari → Extensions</b>. On iOS 16–17, start at <b>Settings → Safari → Extensions</b>.</li>
+      <li>Select <b>Zorro</b> and enable the extension.</li>
+      <li>Allow access to <b>YouTube</b> and <b>returnyoutubedislikeapi.com</b> when Safari asks.</li>
+      <li>Open a YouTube video in Safari. Look for an estimate marked with <b>≈</b> in the dislike button.</li>
+    </ol>
+    <h3>Mac</h3>
+    <ol>
+      <li>Open Zorro, then open <b>Safari → Settings → Extensions</b>.</li>
+      <li>Enable <b>Zorro</b> and allow access to YouTube and the RYD API.</li>
+      <li>Open or refresh a YouTube video. Use the toolbar popup to see likes and estimated dislikes.</li>
+      <li>If the toolbar button is hidden, use <b>View → Customize Toolbar</b> in Safari to add it.</li>
+    </ol>
+    <h3>Check a shared video on iPhone or iPad</h3>
+    <p>In YouTube or Safari, tap <b>Share → More → Zorro</b>. Zorro retrieves statistics for that link without sending a vote. The Safari extension itself does not run inside the YouTube app.</p>
+    <p class="meta">Earlier builds may appear as “YouTube Dislike” in settings and the share sheet.</p>
+
+    <h2>Questions &amp; fixes</h2>
+    <dl class="faq">
+      <dt>Why is there an ≈ next to the number?</dt>
+      <dd>The number is an estimate from Return YouTube Dislike, not an official YouTube count.</dd>
+      <dt>Why can’t I see a dislike count?</dt>
+      <dd>Check that you are on YouTube in Safari, the extension is enabled, and site access is allowed. Refresh the video page. If the RYD service is unavailable or YouTube has changed its layout, estimates may not load; the original YouTube button remains available.</dd>
+      <dt>Can I turn off vote submission?</dt>
+      <dd>Yes. Open the Safari extension’s settings and turn off vote submission. This clears pending submissions and stops new ones. It does not withdraw votes already accepted by RYD. Statistics can still load.</dd>
+      <dt>Do I need an account?</dt>
+      <dd>Zorro does not require an app account to retrieve statistics. Voting on YouTube uses your own YouTube session.</dd>
+      <dt>Does opening a video send a vote?</dt>
+      <dd>No. Opening a video, checking the toolbar popup, or sharing a link only retrieves statistics. Vote submission follows a new like, dislike, or withdrawal you make on YouTube in Safari.</dd>
+      <dt>What information leaves my device?</dt>
+      <dd>Video lookups send the video ID to RYD. Vote submission also sends a random installation identifier and your vote. RYD sees the connection IP address. See the <a href="privacy.html">privacy policy</a> for details and controls.</dd>
+    </dl>
+
+    <h2>Get in touch</h2>
+    <p><a href="mailto:denis@malina.page?subject=Zorro%20support">denis@malina.page</a> · <a href="https://github.com/skar404/youtube-dislike-for-safari/issues">Report an issue on GitHub</a></p>
+    <p>Include your device, iOS or macOS version, app version, and what you expected to happen. Please leave out installation identifiers, account information, and private logs.</p>
+  </main>
+  <footer>
+    <div>© 2026 Denis Malin · Zorro</div>
+    <div><a href="./">Home</a> · <a href="privacy.html">Privacy</a> · <a href="mailto:denis@malina.page">Contact</a></div>
+  </footer>
+</div>
+</body>
+</html>

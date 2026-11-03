@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Zorro — Privacy</title>
+  <meta name="description" content="Zorro privacy: information sent to Return YouTube Dislike, local storage, vote controls, and the iOS share sheet." />
+  <link rel="canonical" href="https://malina.page/youtube-dislike-for-safari/privacy.html" />
+  <link rel="icon" type="image/png" href="img/icon.png" />
+  <link rel="apple-touch-icon" href="img/icon.png" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="shell">
+  <a class="back-link" href="../">← All projects</a>
+  <header class="hero">
+    <img class="hero-icon" src="img/icon.png" alt="Zorro fox app icon" width="84" height="84" />
+    <div><h1>Zorro</h1><div class="tag">Privacy</div></div>
+  </header>
+  <nav class="nav" aria-label="Zorro">
+    <a href="./">Home</a>
+    <a href="support.html">Support</a>
+    <a href="privacy.html" aria-current="page">Privacy</a>
+    <a href="https://github.com/skar404/youtube-dislike-for-safari">GitHub</a>
+  </nav>
+  <main id="main" class="prose">
+    <p>Zorro uses Return YouTube Dislike (RYD), an independent third-party service, to retrieve estimated dislike counts and optionally submit votes.</p>
+    <h2>Data sent</h2>
+    <p>For statistics, the extension sends the ID of the YouTube video you open to <code>https://returnyoutubedislikeapi.com/votes</code>.</p>
+    <p>Vote submission is enabled by default and can be disabled in the Safari extension options page. It sends a cryptographically random installation identifier, video ID, vote (like, dislike or withdrawal), and proof-of-work challenge data to the same API. Registration occurs only when the first new vote is submitted. An authentication failure may replace the random identifier during one re-registration attempt.</p>
+    <p>All API requests omit cookies and the HTTP referrer. Your YouTube name, Google account, password, video title, comments and browsing history outside the current video IDs are not sent by this extension. The API server necessarily sees the connection IP address and ordinary HTTP connection metadata. RYD is responsible for its own server-side processing and retention; consult <a href="https://returnyoutubedislike.com/">Return YouTube Dislike</a>.</p>
+    <h2>Local data and controls</h2>
+    <p><code>browser.storage.local</code> holds the random ID and registration status, submission preference, pending votes, retry metadata, and the most recent delivery/failure status (including its video ID and timestamp). This data is not synced by the extension. Pending votes are limited to 100 video IDs and 24 hours; expired votes are reported as undelivered when the background next wakes. Delivery/failure summaries remain until replaced; a later successful vote for the same video clears its previous failure summary.</p>
+    <p>Disabling submission clears the pending queue, stops new submissions and attempts to abort in-flight requests. It does not withdraw a vote already accepted by RYD. Statistics still load when submission is off. Disable the extension in Safari to stop its API requests altogether. Uninstalling/removing extension data clears local storage subject to Safari&#x27;s data-management behavior; it does not guarantee deletion of data already retained by RYD.</p>
+    <p>The extension requests <code>storage</code>, <code>alarms</code>, <code>activeTab</code>, access to the RYD API, and content script access to <code>youtube.com</code>, <code>www.youtube.com</code>, and <code>m.youtube.com</code>. It does not run on YouTube Music. There is no analytics SDK, ad SDK, native messaging bridge, remote executable code, or extension-operated backend.</p>
+    <p>Opening the toolbar popup reads the active tab URL to identify a YouTube video and show its likes and estimated dislikes. Other sites are ignored; their URLs are not sent to RYD. This lookup does not submit a vote.</p>
+    <h2>iOS share sheet</h2>
+    <p>The Share Extension accepts a YouTube video link explicitly shared by you. It sends only the extracted video ID to the RYD statistics endpoint using an ephemeral session without cookies or referrer. RYD also sees the IP address. It does not send the accompanying text, register an installation, submit votes, or persist the shared link or result. Closing the sheet cancels pending work.</p>
+    <h2>Feedback</h2>
+    <p>Send feedback opens a draft in your mail app addressed to <code>denis@malina.page</code>. The draft includes the app/extension version and platform label, but no video link, installation ID, or voting history. Nothing is emailed automatically; you can edit or discard the draft.</p>
+    <h2>Contact</h2>
+    <p>Privacy questions: <a href="mailto:denis@malina.page">denis@malina.page</a>.</p>
+  </main>
+  <footer>
+    <div>© 2026 Denis Malin · Zorro</div>
+    <div><a href="./">Home</a> · <a href="support.html">Support</a> · <a href="mailto:denis@malina.page">Contact</a></div>
+  </footer>
+</div>
+</body>
+</html>
