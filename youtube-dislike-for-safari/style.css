@@ -150,6 +150,9 @@ header.hero {
   font-size: 15px;
 }
 .button:hover { background: var(--accent-hover); color: #FFF9F0; }
+.app-store-badge { display: inline-flex; transition: opacity 0.15s; }
+.app-store-badge:hover { opacity: 0.85; }
+.app-store-badge img { height: 52px; width: auto; display: block; }
 .release-note, .gallery-note { font-size: 13px; }
 .gallery-note { margin-top: 12px; }
 .prose a { text-decoration: underline; text-underline-offset: 3px; }
