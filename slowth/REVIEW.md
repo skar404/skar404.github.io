@@ -67,3 +67,16 @@ Native Safari observations after the revision: hero at 375, 768 and 1440 CSS pix
 Static checks passed for H1 count, duplicate IDs, local file references and fragments, alt/intrinsic dimensions, JSON-LD syntax, all nine sitemap URLs, and unchanged privacy HTML. The new markup is descriptive, with no invented ratings or reviews. The page stays static and adds no tracking or executable client scripts.
 
 Search implementation, live crawler-rule observations and indexing follow-up are in SEARCH.md. Indexing and AI citations are not guaranteed by deployment.
+
+
+## Localization review — 17 November 2026
+
+The locale set matches all 64 app language/region variants. Landing, Support and Privacy produce 192 canonical pages. Existing privacy policy paragraphs and historical URLs are preserved. The contribution tool and image assets are unchanged.
+
+Validation covers complete message catalogs, balanced/trusted inline markup, preserved links, missing files/anchors, image dimensions and alternative text, one H1 per page, self-canonical URLs, reciprocal hreflang, JSON-LD parsing and language, sitemap coverage, and unchanged policy paragraphs. Operational values for the 24-hour lock, 5–15-second detection rest and proposed $10,000 grant were checked across locales. A scan caught and removed leftover English passages and translation batch markers. Regional English variants intentionally share copy.
+
+Visual samples include Russian and Arabic at 375 CSS pixels, Japanese at 768 and German at 1440. The language menu was opened and used to switch from Russian to Arabic. Shared mobile footer wrapping was corrected for long translations. CSS content hashes prevent older cached styles from masking layout fixes.
+
+The translations are machine-assisted with editorial corrections; this is not native-speaker or legal review of every locale. English screenshots and the official store badge retain their original artwork. Browser checks cover rendering and navigation, not physical-device app behavior or search-engine indexing.
+
+Final Safari layout audit: all 192 pages at 375, 768 and 1440 CSS pixels (576 cases), with language menus both closed and expanded, completed without document overflow or off-screen menus. This is a browser geometry check plus the visual samples above, not a pixel-by-pixel visual review of every page.

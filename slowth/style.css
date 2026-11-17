@@ -834,3 +834,56 @@ footer .wordmark {
 }
 .wordmark,.wordmark picture { flex-shrink:0; }
 @media(max-width:1000px) { .site-header .nav-project { display:none; } }
+
+/* Shared, script-free language navigation for all app locales. */
+.site-header { display:grid; grid-template-columns:1fr auto auto; gap:24px; }
+.language-switcher { position:relative; justify-self:end; z-index:5; }
+.language-switcher summary { display:flex; align-items:center; gap:8px; padding:10px 14px; border:1px solid var(--rule); border-radius:24px; font-size:13px; line-height:1.4; font-weight:500; }
+.language-switcher summary::after { content:'⌄'; position:static; font-size:16px; line-height:1; }
+.language-switcher[open] summary::after { content:'⌄'; transform:rotate(180deg); }
+.language-switcher summary bdi { max-width:180px; overflow-wrap:anywhere; }
+.language-menu,.site-header .language-menu { position:absolute; inset-inline-end:0; top:calc(100% + 12px); display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:4px; width:min(640px,calc(100vw - 40px)); max-height:60vh; overflow-y:auto; overscroll-behavior:contain; padding:14px; background:var(--paper); border:1px solid var(--rule); border-radius:14px; box-shadow:0 12px 30px #2446371a; }
+.language-menu a,.site-header .language-menu a { display:flex; align-items:center; min-height:44px; padding:8px 10px; font-size:14px; line-height:1.4; border-radius:7px; text-decoration:none; overflow-wrap:anywhere; }
+.language-menu a:hover,.language-menu a[aria-current="page"] { background:var(--sage); }
+.language-menu a[aria-current="page"] { font-weight:700; text-decoration:underline; }
+.shell:not(.wide)>.language-switcher { width:fit-content; margin:24px 0; }
+.shell:not(.wide)>.language-switcher .language-menu { inset-inline-end:auto; inset-inline-start:0; }
+.localized h1,.localized h2,.localized h3 { overflow-wrap:anywhere; hyphens:auto; }
+.localized .intro h1 { font-size:clamp(40px,4.7vw,66px); letter-spacing:-.035em; }
+.localized .intro h1 em { display:block; margin-top:.13em; font-size:.82em; }
+.localized .intro-description { font-size:17px; }
+.localized .intro-actions { gap:18px; }
+.localized .intro .text-link { max-width:220px; line-height:1.5; }
+.localized .eyebrow { letter-spacing:.08em; }
+[dir="rtl"] h1,[dir="rtl"] h2,[dir="rtl"] h3,[dir="rtl"] .eyebrow { letter-spacing:normal; }
+[dir="rtl"] .intro h1 em { font-family:inherit; font-style:normal; }
+[dir="rtl"] .support-main section ol { padding-left:0; padding-inline-start:23px; }
+.screenshot-language-note { font-size:12px; flex-basis:100%; }
+@media(min-width:701px) and (max-width:1000px) {
+ .site-header { gap:16px; }
+ .site-header>nav { gap:16px; }
+ .localized .intro { grid-template-columns:minmax(0,1fr) 260px; gap:24px; }
+ .localized .intro h1 { font-size:44px; }
+ .localized .hero-visual>.phone { width:260px; }
+}
+@media(max-width:700px) {
+ .site-header { grid-template-columns:1fr auto; gap:10px 16px; }
+ .site-header>.wordmark { grid-column:1; grid-row:1; }
+ .site-header>.language-switcher { grid-column:2; grid-row:1; }
+ .site-header>nav { grid-column:1 / -1; grid-row:2; justify-content:flex-start; flex-wrap:wrap; gap:8px 24px; }
+ .site-header>nav a { font-size:13px; min-height:36px; padding-block:6px; }
+ .language-switcher summary { padding:8px 11px; font-size:12px; }
+ .language-switcher summary bdi { max-width:155px; }
+ .language-menu,.site-header .language-menu { grid-template-columns:repeat(2,minmax(0,1fr)); padding:10px; }
+ .localized .intro h1 { font-size:clamp(37px,10vw,58px); }
+ .localized .intro-description { font-size:16px; }
+ .localized .intro h1 em { font-size:.86em; }
+ .localized .intro .text-link { max-width:180px; }
+ .localized .availability span { margin-inline-start:0; padding-inline-start:0; border:0; display:block; }
+}
+
+.localized .intro .text-link { display:inline-flex; align-items:center; gap:10px; }
+.localized .intro .text-link span { margin:0; flex-shrink:0; }
+
+footer .wordmark { min-width:0; max-width:100%; }
+.footer-tag { min-width:0; max-width:100%; overflow-wrap:anywhere; }
