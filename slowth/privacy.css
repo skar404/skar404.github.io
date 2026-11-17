@@ -1,5 +1,5 @@
 .brand {
-  font-size: clamp(40px, 6vw, 64px);
+  font-size: clamp(32px, 5vw, 44px);
   font-weight: 800;
   line-height: 1.02;
   letter-spacing: -0.025em;
@@ -33,7 +33,7 @@
 
 .language-picker a[aria-current="page"] {
   border-color: var(--pink);
-  background: rgba(255, 107, 170, 0.12);
+  background: var(--peach);
 }
 
 a:focus-visible {
